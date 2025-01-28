@@ -7,7 +7,6 @@ from sklearn.metrics import accuracy_score, classification_report
 
 # Paths to datasets
 plaque_buildup_dir = r"C:\Users\vaish\Downloads\Plaque Buildup DataSet"  # Path to plaque buildup images
-gum_disease_dir = r"C:\Users\vaish\Downloads\Gum Diseases DataSet.zip"  # Path to gum disease images
 healthy_teeth_dir = r"C:\Users\vaish\Downloads\Healthy Teeth and Gums Image.zip"  # Path to healthy teeth and gums images
 
 
@@ -24,14 +23,6 @@ def preprocess_data(plaque_buildup_dir, gum_disease_dir, healthy_teeth_dir, img_
         X.append(img.flatten())  # Flatten the image
         y.append(1)  # Label for plaque buildup
 
-    # Load gum disease images
-    for img_name in os.listdir(gum_disease_dir):
-        img_path = os.path.join(gum_disease_dir, img_name)
-        img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)  # Load as grayscale
-        img = cv2.resize(img, img_size)  # Resize to fixed dimensions
-        X.append(img.flatten())  # Flatten the image
-        y.append(2)  # Label for gum disease
-
     # Load healthy teeth images
     for img_name in os.listdir(healthy_teeth_dir):
         img_path = os.path.join(healthy_teeth_dir, img_name)
@@ -41,10 +32,8 @@ def preprocess_data(plaque_buildup_dir, gum_disease_dir, healthy_teeth_dir, img_
         y.append(0)  # Label for healthy teeth
 
     return np.array(X), np.array(y)
-
-
 # Load and preprocess data
-X, y = preprocess_data(plaque_buildup_dir, gum_disease_dir, healthy_teeth_dir)
+X, y = preprocess_data(plaque_buildup_dir, healthy_teeth_dir)
 
 # Split data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
