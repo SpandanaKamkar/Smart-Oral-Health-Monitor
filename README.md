@@ -1,19 +1,3 @@
 # Smart-Oral-Health-Monitor
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-This is the readme file.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
->>>>>>> 23de217 (Initial flutter app)
+Many people neglect daily dental care and only visit the dentist when a serious issue arises. To address this, we have developed a smart device designed to detect dental problems, such as cavities, plaque buildup, mouth ulcers and gum issues at an early stage. By providing real-time insights into oral health, this device encourages proactive dental care, helping individuals maintain better oral hygiene and prevent complications before they require professional treatment.
