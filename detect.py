@@ -100,6 +100,3 @@ test_dir = r"D:\Dental diseases\Combined dataset"
 
 # Run test on shuffled images
 test_random_images(svm_model, test_dir)
-
-
-
