@@ -1,11 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  File? _selectedImage; // Variable to store selected image
+
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +50,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         drawer: Drawer(
-          // **Sliding Drawer Menu**
+          // Sliding Drawer Menu
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
@@ -74,7 +93,7 @@ class MyApp extends StatelessWidget {
             ],
           ),
         ),
-        body: Padding(
+        body: SingleChildScrollView(
           padding: EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +136,7 @@ class MyApp extends StatelessWidget {
                       border: Border.all(
                           color: const Color.fromARGB(119, 158, 158, 158),
                           width: 2),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.3),
@@ -178,7 +197,7 @@ class MyApp extends StatelessWidget {
                       border: Border.all(
                           color: const Color.fromARGB(119, 158, 158, 158),
                           width: 2),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.3),
@@ -239,7 +258,7 @@ class MyApp extends StatelessWidget {
                       border: Border.all(
                           color: const Color.fromARGB(119, 158, 158, 158),
                           width: 2),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.3),
@@ -292,11 +311,88 @@ class MyApp extends StatelessWidget {
               ),
               SizedBox(height: 20),
               Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    //Action on button press
-                  },
-                  child: Text("Upload images"),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 20),
+                    Container(
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color.fromARGB(255, 191, 234, 231),
+                              Color.fromARGB(255, 148, 185, 255),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(25)),
+                      child: ElevatedButton(
+                        onPressed: _pickImage,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Colors.transparent, // Change button color
+                          shadowColor:
+                              Colors.transparent, // Remove default shadow
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 12), // Button padding
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(20), // Rounded corners
+                          ),
+                        ),
+                        child: Text(
+                          "Upload Images",
+                          style: TextStyle(
+                              color: Colors.blueGrey,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    _selectedImage != null
+                        ? Column(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.file(
+                                  _selectedImage!,
+                                  width: 250,
+                                  height: 250,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Action
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Color.fromARGB(255, 183, 223, 246),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 8),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                ),
+                                child: Text(
+                                  "Show Analysis",
+                                  style: TextStyle(
+                                    color: Colors.blueGrey,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : Text(
+                            "No image uploaded",
+                            style:
+                                TextStyle(fontSize: 16, color: Colors.blueGrey),
+                          ),
+                  ],
                 ),
               ),
             ],
