@@ -1,0 +1,54 @@
+import random
+import webbrowser
+
+
+def detect_dental_issues(image_data):
+    conditions = ["cavity", "mouth ulcer", "gum problems", "tooth discoloration", "plaque buildup"]
+    detected_issues = []
+    for condition in conditions:
+        if random.random() > 0.5:  
+            detected_issues.append(condition)
+
+    return detected_issues
+
+
+def get_remedy_link(issues):
+    remedy_links = {
+        "cavity": "https://www.youtube.com/watch?v=5EuOZDBJFhc",
+        "mouth ulcer": "https://www.youtube.com/watch?v=UqRpl1Ll5lM",
+        "gum problems": "https://www.youtube.com/watch?v=ggdjx0NVy74",
+        "tooth discoloration": "https://www.youtube.com/watch?v=yulO9AmXckc",
+        "plaque buildup": "https://www.youtube.com/watch?v=Ez_LHZQnWYM"
+    }
+
+    links = []
+    for issue in issues:
+        if issue in remedy_links:
+            links.append(remedy_links[issue])
+
+    return links
+
+
+def main():
+
+    image_data = "oral_image_data"  
+
+
+    detected_issues = detect_dental_issues(image_data)
+
+    if detected_issues:
+
+        print(f"Detected dental issues: {detected_issues}")
+
+        remedy_links = get_remedy_link(detected_issues)
+        print("Here are some YouTube videos for remedies:")
+        for link in remedy_links:
+            print(link)
+
+            webbrowser.open(link)
+    else:
+        print("No dental issues detected. Keep maintaining your oral health!")
+
+
+if __name__ == "__main__":
+    main()
