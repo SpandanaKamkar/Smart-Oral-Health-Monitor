@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/ssanjay/development/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/ssanjay/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/ssanjay/Documents/Flutter apps/Smart_oral_health_monitor/android/app/.cxx/Debug/3o1y4y6c/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/ssanjay/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/ssanjay/Documents/Flutter apps/Smart_oral_health_monitor/android/app/.cxx/Debug/3o1y4y6c/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}
