@@ -13,8 +13,12 @@ labels_dict = {
     5: "Gum Disease"
 }
 
-def detect_disease(img_path, model):
-    """ Predicts dental disease and displays result with bounding box. """
+# Load model once
+model = DentalDiseaseModel(['/Users/ssanjay/PycharmProjects/Smart-Oral-Health-Monitor/dental_disease.model'])
+model.load_model()
+
+def detect_disease(img_path, save_path):
+    """ Predicts dental disease, processes the image, and saves it. """
     if not os.path.exists(img_path):
         print(f"Error: Image not found - {img_path}")
         return
@@ -24,33 +28,21 @@ def detect_disease(img_path, model):
         print(f"Error: Unable to load image {img_path}")
         return
 
+    # Predict disease
     prediction = model.predict(img)
     label = labels_dict.get(prediction, "Unknown")
 
-    # Draw bounding box & label on image
+    # Draw bounding box & label
     h, w, _ = img.shape
     start_point = (int(w * 0.25), int(h * 0.25))
     end_point = (int(w * 0.75), int(h * 0.75))
     color = (0, 255, 0) if prediction == 0 else (0, 0, 255)
 
     cv2.rectangle(img, start_point, end_point, color, 2)
-    cv2.putText(img, label, (start_point[0], start_point[1] - 10),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
+    # cv2.putText(img, label, (start_point[0], start_point[1] - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 4)
 
-    # Display result
-    cv2.imshow('Dental Disease Detection', img)
-    print(f"Predicted: {label}")
-    cv2.waitKey(2000)  # Show for 2 seconds
-    cv2.destroyAllWindows()
+    # Save processed image
+    cv2.imwrite(save_path, img)
+    print(f"✅ Processed image saved at: {save_path}")
 
-# Load model
-model = DentalDiseaseModel()
-model.load_model()
-
-# Test dataset path
-test_dir = r"D:\Dental diseases\Combined dataset"
-
-# Run test on multiple images
-for img_name in os.listdir(test_dir):
-    img_path = os.path.join(test_dir, img_name)
-    detect_disease(img_path, model)
+    return label

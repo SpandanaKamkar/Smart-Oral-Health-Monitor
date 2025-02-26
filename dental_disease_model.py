@@ -60,7 +60,7 @@ class DentalDiseaseModel:
 
     def load_model(self):
         self.model, self.scaler = joblib.load(self.model_path)
-        print(f"Model loaded from {self.model_path}")
+        # print(f"Model loaded from {self.model_path}")
 
     def predict(self, img):
         img = cv2.resize(img, self.img_size)
