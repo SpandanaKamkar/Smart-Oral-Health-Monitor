@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'youtube_video_page.dart';
+import 'faq_page.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MaterialApp(
+    home: MyApp(),
+  ));
 }
 
 class MyApp extends StatefulWidget {
@@ -51,6 +55,7 @@ class _MyAppState extends State<MyApp> {
         ),
         drawer: Drawer(
           // Sliding Drawer Menu
+          backgroundColor: Colors.white,
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
@@ -67,23 +72,39 @@ class _MyAppState extends State<MyApp> {
                 ),
                 child: Text(
                   'Menu',
-                  style: TextStyle(fontSize: 24, color: Colors.blueGrey),
+                  style: TextStyle(
+                      fontSize: 24, color: Color.fromARGB(255, 47, 61, 68)),
                 ),
               ),
-              ListTile(
-                leading: Icon(Icons.video_call),
-                title: Text('Video tutorial'),
-                onTap: () => Navigator.pop(context),
+              Builder(
+                builder: (context) => ListTile(
+                  leading: Icon(Icons.video_call),
+                  title: Text('Video tutorial'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => YouTubeVideoPage()),
+                    );
+                  },
+                ),
               ),
               ListTile(
                 leading: Icon(Icons.contact_phone_outlined),
                 title: Text('Connect with dentist'),
                 onTap: () => Navigator.pop(context),
               ),
-              ListTile(
-                leading: Icon(Icons.question_answer),
-                title: Text('FAQs'),
-                onTap: () => Navigator.pop(context),
+              Builder(
+                builder: (context) => ListTile(
+                  leading: Icon(Icons.question_answer),
+                  title: Text('FAQs'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => FAQPage()),
+                    );
+                  },
+                ),
               ),
               ListTile(
                 leading: Icon(Icons.reviews),
@@ -225,7 +246,7 @@ class _MyAppState extends State<MyApp> {
                             Container(
                               width: 200,
                               child: Text(
-                                'Upload the pictures by clicking the button below and watch AI’s magic',
+                                'Upload the pictures by clicking the button below',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w300,
@@ -239,7 +260,7 @@ class _MyAppState extends State<MyApp> {
                               borderRadius: BorderRadius.circular(10),
                               child: Image.asset(
                                 'assets/images/upload.png',
-                                width: 100,
+                                width: 80,
                                 fit: BoxFit.cover,
                               ),
                             ),
