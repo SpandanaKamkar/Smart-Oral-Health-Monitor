@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
 import 'youtube_video_page.dart';
 import 'faq_page.dart';
+import 'dart:convert';
 
 void main() {
   runApp(MaterialApp(
@@ -10,23 +13,102 @@ void main() {
   ));
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
-  _MyAppState createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Dental Disease Detection',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: ImageUploader(),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-  File? _selectedImage; // Variable to store selected image
+class ImageUploader extends StatefulWidget {
+  @override
+  _ImageUploaderState createState() => _ImageUploaderState();
+}
+
+class _ImageUploaderState extends State<ImageUploader> {
+  String? _predictedDisease; // Store the predicted disease name
+  File? _selectedImage;
+  Uint8List? _processedImage;
+  bool _showAnalysis = false; // Controls when the processed image is displayed
 
   Future<void> _pickImage() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
+    print("Picked image from gallery");
 
     if (pickedFile != null) {
       setState(() {
         _selectedImage = File(pickedFile.path);
+        _processedImage = null;
+        _predictedDisease = null;
+        _showAnalysis = false;
       });
+      print("✅ Image selected: ${_selectedImage!.path}");
+    } else {
+      print("❌ No image selected");
+    }
+  }
+
+  Future<void> _uploadImage() async {
+    if (_selectedImage == null) {
+      print("❌ No image selected!");
+      return;
+    }
+
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('http://10.0.2.2:5000/detect'), // Ensure Flask is running
+    );
+
+    request.files
+        .add(await http.MultipartFile.fromPath('file', _selectedImage!.path));
+
+    print("📤 Uploading image...");
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+      // Read response as JSON
+      var responseBody = await response.stream.bytesToString();
+      print("📥 Server Response: $responseBody");
+
+      var jsonResponse = jsonDecode(responseBody);
+      if (jsonResponse.containsKey("processed_image_url") &&
+          jsonResponse.containsKey("predicted_disease")) {
+        setState(() {
+          _predictedDisease = jsonResponse["predicted_disease"];
+        });
+        String diseaseLabel = jsonResponse["predicted_disease"];
+        String processedImageUrl =
+            "http://10.0.2.2:5000" + jsonResponse["processed_image_url"];
+
+        print("🔹 Disease Detected: $_predictedDisease");
+        print("🔹 Processed Image URL: $processedImageUrl");
+
+        // Fetch processed image from Flask
+        var imageResponse = await http.get(Uri.parse(processedImageUrl));
+
+        if (imageResponse.statusCode == 200) {
+          setState(() {
+            _processedImage = imageResponse.bodyBytes;
+            _showAnalysis = true;
+            print("✅ Processed image received and stored.");
+          });
+        } else {
+          print(
+              "❌ Failed to load processed image: ${imageResponse.statusCode}");
+        }
+      } else {
+        print("❌ JSON Response is missing required fields.");
+      }
+    } else {
+      print("❌ Failed to upload image: ${response.statusCode}");
     }
   }
 
@@ -378,15 +460,18 @@ class _MyAppState extends State<MyApp> {
                                 borderRadius: BorderRadius.circular(20),
                                 child: Image.file(
                                   _selectedImage!,
-                                  width: 250,
-                                  height: 250,
                                   fit: BoxFit.cover,
                                 ),
                               ),
                               SizedBox(height: 20),
                               ElevatedButton(
-                                onPressed: () {
-                                  // Action
+                                onPressed: () async {
+                                  if (_selectedImage == null) return;
+                                  setState(() {
+                                    _showAnalysis =
+                                        false; // Hide previous results before uploading new image
+                                  });
+                                  await _uploadImage();
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:
@@ -406,6 +491,50 @@ class _MyAppState extends State<MyApp> {
                                   ),
                                 ),
                               ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              // Display analysis results ONLY when _showAnalysis == true
+                              if (_showAnalysis) ...[
+                                _processedImage != null
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: Image.memory(
+                                          _processedImage!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    : Container(),
+                                SizedBox(height: 20),
+                                _predictedDisease != null
+                                    ? Center(
+                                        child: Text.rich(
+                                          TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    "Indicates presence of..\n",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                  color: Colors.blueGrey,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: _predictedDisease,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 16,
+                                                  color: Colors.blueGrey,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      )
+                                    : Container(),
+                              ],
                             ],
                           )
                         : Text(
