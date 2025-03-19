@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, send_file, jsonify
 from predict_disease import detect_disease  # Import function from predict_disease.py
 from flask import send_from_directory
+from remedies import get_remedy_links
 
 app = Flask(__name__)
 
@@ -38,9 +39,13 @@ def detect():
     if not os.path.exists(processed_img_path):
         return jsonify({"error": "Processed image not found"}), 404
 
+    # Fetch remedy links
+    remedy_links = get_remedy_links([label]) if label else []
+
     response = {
         "processed_image_url": f"/processed/processed_{file.filename}",  # Ensure correct file path
-        "predicted_disease": label
+        "predicted_disease": label,
+        "remedy_links": remedy_links
     }
 
     print("✅ Returning Response:", response)

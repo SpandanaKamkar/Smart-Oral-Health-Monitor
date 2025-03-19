@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'youtube_video_page.dart';
 import 'faq_page.dart';
 import 'dart:convert';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -37,6 +38,7 @@ class _ImageUploaderState extends State<ImageUploader> {
   File? _selectedImage;
   Uint8List? _processedImage;
   bool _showAnalysis = false; // Controls when the processed image is displayed
+  List<String> _remedyLinks = []; // Store remedy links
 
   Future<void> _pickImage() async {
     final pickedFile =
@@ -80,16 +82,19 @@ class _ImageUploaderState extends State<ImageUploader> {
 
       var jsonResponse = jsonDecode(responseBody);
       if (jsonResponse.containsKey("processed_image_url") &&
-          jsonResponse.containsKey("predicted_disease")) {
+          jsonResponse.containsKey("predicted_disease") &&
+          jsonResponse.containsKey("remedy_links")) {
         setState(() {
           _predictedDisease = jsonResponse["predicted_disease"];
+          _remedyLinks = List<String>.from(jsonResponse["remedy_links"]);
         });
-        String diseaseLabel = jsonResponse["predicted_disease"];
+        // String diseaseLabel = jsonResponse["predicted_disease"];
         String processedImageUrl =
             "http://10.0.2.2:5000" + jsonResponse["processed_image_url"];
-
+        // List<String> remedyLinks = List<String>.from(jsonResponse["remedy_links"]);
         print("🔹 Disease Detected: $_predictedDisease");
         print("🔹 Processed Image URL: $processedImageUrl");
+        print("🔹 Remedy Links: $_remedyLinks");
 
         // Fetch processed image from Flask
         var imageResponse = await http.get(Uri.parse(processedImageUrl));
@@ -109,6 +114,15 @@ class _ImageUploaderState extends State<ImageUploader> {
       }
     } else {
       print("❌ Failed to upload image: ${response.statusCode}");
+    }
+  }
+
+  void _launchURL(String url) async {
+    Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      print("❌ Could not launch $url");
     }
   }
 
@@ -211,7 +225,7 @@ class _ImageUploaderState extends State<ImageUploader> {
                 textAlign: TextAlign.center,
               ),
               Text(
-                'Use our AI-powered tool to monitor and maintain oral health at home',
+                'Use Smart Oral Health Monitor to maintain oral health at home',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w200,
@@ -534,6 +548,27 @@ class _ImageUploaderState extends State<ImageUploader> {
                                         ),
                                       )
                                     : Container(),
+                                SizedBox(height: 20),
+                                Text("Preventive steps that you can take:",
+                                    style: TextStyle(
+                                        color: Colors.blueGrey,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                for (var link in _remedyLinks)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4.0),
+                                    child: GestureDetector(
+                                      onTap: () => _launchURL(link),
+                                      child: Text(
+                                        link,
+                                        style: TextStyle(
+                                            color: Colors.blue,
+                                            decoration:
+                                                TextDecoration.underline),
+                                      ),
+                                    ),
+                                  ),
                               ],
                             ],
                           )
