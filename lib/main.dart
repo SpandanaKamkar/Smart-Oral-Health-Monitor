@@ -7,6 +7,9 @@ import 'youtube_video_page.dart';
 import 'faq_page.dart';
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
+import '../services/mongo_service.dart';
+import '../profile_page.dart';
+import '../pages/login_page.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -14,8 +17,32 @@ void main() {
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+Map<String, dynamic>? user;
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    String? userEmail = await MongoService.getUserSession();
+    if (userEmail != null) {
+      Map<String, dynamic>? fetchedUser =
+          await MongoService.getUserData(userEmail);
+      setState(() {
+        user = fetchedUser;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +163,25 @@ class _ImageUploaderState extends State<ImageUploader> {
             'Smart Oral Health Monitor',
             style: TextStyle(color: Color.fromARGB(255, 47, 61, 68)),
           ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.account_circle),
+              onPressed: () {
+                if (user != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(user: user!),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("User data not loaded yet!")),
+                  );
+                }
+              },
+            ),
+          ],
           flexibleSpace: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -216,7 +262,7 @@ class _ImageUploaderState extends State<ImageUploader> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Did you check your oral health today?',
+                'Welcome, ${user != null ? user!['name'] : 'Guest'}!\nDid you check your oral health today?',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.normal,
