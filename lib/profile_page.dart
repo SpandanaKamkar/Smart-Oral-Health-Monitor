@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/mongo_service.dart';
 import '../pages/login_page.dart';
+import 'package:intl/intl.dart';
 
 class ProfilePage extends StatelessWidget {
   final Map<String, dynamic> user;
@@ -13,6 +14,16 @@ class ProfilePage extends StatelessWidget {
       context,
       MaterialPageRoute(builder: (context) => LoginPage()),
     );
+  }
+
+  String formatDateTime(String? dateTimeStr) {
+    if (dateTimeStr == null || dateTimeStr.isEmpty) return "Never Scanned";
+    try {
+      DateTime dateTime = DateTime.parse(dateTimeStr);
+      return DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
+    } catch (e) {
+      return "Invalid Date";
+    }
   }
 
   @override
@@ -45,6 +56,11 @@ class ProfilePage extends StatelessWidget {
             Text("Name: ${user['name']}", style: TextStyle(fontSize: 17)),
             SizedBox(height: 10),
             Text("Email: ${user['email']}", style: TextStyle(fontSize: 17)),
+            SizedBox(height: 10),
+            Text(
+              "Last Scanned: ${formatDateTime(user['last_scanned'])}",
+              style: TextStyle(fontSize: 17),
+            ),
             SizedBox(height: 20),
             Container(
               decoration: BoxDecoration(

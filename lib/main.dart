@@ -127,6 +127,21 @@ class _ImageUploaderState extends State<ImageUploader> {
         var imageResponse = await http.get(Uri.parse(processedImageUrl));
 
         if (imageResponse.statusCode == 200) {
+          String? userEmail = await MongoService.getUserSession();
+          print("email: $userEmail");
+          DateTime now = DateTime.now(); // Get current timestamp
+          print("date/time: $now");
+
+          // Update last scanned timestamp in the database
+          await MongoService.userCollection.updateOne(
+            {"email": userEmail}, // Find user by email
+            {
+              "\$set": {
+                "last_scanned":
+                    now.toIso8601String(), // Store timestamp in ISO format
+              }
+            },
+          );
           setState(() {
             _processedImage = imageResponse.bodyBytes;
             _showAnalysis = true;

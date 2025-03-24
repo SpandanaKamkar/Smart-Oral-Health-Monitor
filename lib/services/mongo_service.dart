@@ -48,4 +48,18 @@ class MongoService {
     }
     return await userCollection.findOne(where.eq('email', email));
   }
+
+  static Future<Map<String, dynamic>?> getUserDetails() async {
+    String? userEmail = await MongoService.getUserSession();
+    if (userEmail == null) return null;
+
+    var db = await Db.create(mongoUrl);
+    await db.open();
+    var collection = db.collection(collectionName);
+
+    var user = await collection.findOne(where.eq('email', userEmail));
+    await db.close();
+
+    return user;
+  }
 }
