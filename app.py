@@ -42,8 +42,10 @@ def detect():
     # Fetch remedy links
     remedy_links = get_remedy_links([label]) if label else []
 
+    SERVER_IP = "192.168.1.40"  # ✅ Use your actual local IP
+
     response = {
-        "processed_image_url": f"/processed/processed_{file.filename}",  # Ensure correct file path
+        "processed_image_url": f"http://{SERVER_IP}:5000/processed/processed_{file.filename}",
         "predicted_disease": label,
         "remedy_links": remedy_links
     }
@@ -52,4 +54,4 @@ def detect():
     return jsonify(response)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="192.168.1.40", port=5000, debug=True)

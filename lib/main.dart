@@ -93,7 +93,7 @@ class _ImageUploaderState extends State<ImageUploader> {
 
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('http://10.0.2.2:5000/detect'), // Ensure Flask is running
+      Uri.parse('http://192.168.1.40:5000/detect'), // Ensure Flask is running
     );
 
     request.files
@@ -116,8 +116,7 @@ class _ImageUploaderState extends State<ImageUploader> {
           _remedyLinks = List<String>.from(jsonResponse["remedy_links"]);
         });
         // String diseaseLabel = jsonResponse["predicted_disease"];
-        String processedImageUrl =
-            "http://10.0.2.2:5000" + jsonResponse["processed_image_url"];
+        String processedImageUrl = jsonResponse["processed_image_url"];
         // List<String> remedyLinks = List<String>.from(jsonResponse["remedy_links"]);
         print("🔹 Disease Detected: $_predictedDisease");
         print("🔹 Processed Image URL: $processedImageUrl");

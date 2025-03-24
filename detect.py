@@ -7,7 +7,7 @@ from sklearn.metrics import accuracy_score, classification_report
 
 # Define dataset paths
 dataset_paths = {
-    "Dental Cavities": r"D:\Dental diseases\Data caries",
+    "Dental Cavities": r"D:\Dental diseases\Dental caries",
     "Teeth Discoloration": r"D:\Dental diseases\Tooth Discoloration",
     "Plaque Buildup": r"D:\Dental diseases\Plaque Buildup DataSet",
     "Mouth Ulcer": r"D:\Dental diseases\Mouth Ulcer",
