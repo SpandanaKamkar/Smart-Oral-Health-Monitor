@@ -13,16 +13,18 @@ labels_dict = {
     5: "Gum Disease"
 }
 
-def detect_disease(img_path, model):
-    """ Predicts dental disease and displays result with bounding box. """
+
+def detect_disease(img_path, processed_img_path, model):
+    """ Predicts dental disease and saves result with bounding box. """
+
     if not os.path.exists(img_path):
-        print(f"Error: Image not found - {img_path}")
-        return
+        print(f"❌ Error: Image not found - {img_path}")
+        return None
 
     img = cv2.imread(img_path)
     if img is None:
-        print(f"Error: Unable to load image {img_path}")
-        return
+        print(f"❌ Error: Unable to load image {img_path}")
+        return None
 
     prediction = model.predict(img)
     label = labels_dict.get(prediction, "Unknown")
@@ -37,20 +39,14 @@ def detect_disease(img_path, model):
     cv2.putText(img, label, (start_point[0], start_point[1] - 10),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
 
-    # Display result
-    cv2.imshow('Dental Disease Detection', img)
-    print(f"Predicted: {label}")
-    cv2.waitKey(2000)  # Show for 2 seconds
-    cv2.destroyAllWindows()
+    # Save processed image
+    cv2.imwrite(processed_img_path, img)
+
+    print(f"✅ Predicted: {label}")
+    return label  # Return the predicted label
+
 
 # Load model
-model = DentalDiseaseModel()
+dataset_paths = ["D:/Dental diseases/Training dataset"]  # ✅ Update dataset path
+model = DentalDiseaseModel(dataset_paths)  # ✅ Pass dataset_paths to the model
 model.load_model()
-
-# Test dataset path
-test_dir = r"D:\Dental diseases\Test dataset - Final"
-
-# Run test on multiple images
-for img_name in os.listdir(test_dir):
-    img_path = os.path.join(test_dir, img_name)
-    detect_disease(img_path, model)
