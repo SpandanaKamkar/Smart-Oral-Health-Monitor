@@ -62,4 +62,23 @@ class MongoService {
 
     return user;
   }
+
+  // Fetch all reviews
+  static Future<List<Map<String, dynamic>>> getReviews() async {
+    return await userCollection.find().toList();
+  }
+
+  // Add a new review
+  static Future<void> addReview(String reviewText) async {
+    String? userEmail = await getUserSession();
+    if (userEmail == null) return;
+
+    await connect();
+    await userCollection.update(
+      where.eq('email', userEmail),
+      modify.set('review', reviewText),
+      upsert: true, // If no review exists, insert one
+    );
+    await db.close();
+  }
 }

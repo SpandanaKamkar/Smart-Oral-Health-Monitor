@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../services/mongo_service.dart';
 import '../profile_page.dart';
 import '../pages/login_page.dart';
+import 'reviews.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -262,10 +263,17 @@ class _ImageUploaderState extends State<ImageUploader> {
                   },
                 ),
               ),
-              ListTile(
-                leading: Icon(Icons.reviews),
-                title: Text('User reviews'),
-                onTap: () => Navigator.pop(context),
+              Builder(
+                builder: (context) => ListTile(
+                  leading: Icon(Icons.reviews),
+                  title: Text('User reviews'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Reviews()),
+                    );
+                  },
+                ),
               ),
             ],
           ),
