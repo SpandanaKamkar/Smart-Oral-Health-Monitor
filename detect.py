@@ -5,14 +5,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report
 
-# Define dataset paths
+# Dataset paths
 dataset_paths = {
-    "Dental Cavities": r"D:\Dental diseases\Dental caries",
-    "Teeth Discoloration": r"D:\Dental diseases\Tooth Discoloration",
-    "Plaque Buildup": r"D:\Dental diseases\Plaque Buildup DataSet",
-    "Mouth Ulcer": r"D:\Dental diseases\Mouth Ulcer",
-    "Gum Disease": r"D:\Dental diseases\Gum Diseases DataSet",
-    "Healthy Teeth": r"D:\Dental diseases\Healthy Teeth and Gums Images"
+    "Healthy Teeth": "/Users/ssanjay/Documents/FYP/Smart_oral_health_monitor/Dental diseases/Healthy Teeth and Gums Images",
+    "Dental Cavities": "/Users/ssanjay/Documents/FYP/Smart_oral_health_monitor/Dental diseases/Dental caries",
+    "Teeth Discoloration": "/Users/ssanjay/Documents/FYP/Smart_oral_health_monitor/Dental diseases/Tooth Discoloration",
+    "Plaque Buildup": "/Users/ssanjay/Documents/FYP/Smart_oral_health_monitor/Dental diseases/Plaque Buildup DataSet",
+    "Mouth Ulcer": "/Users/ssanjay/Documents/FYP/Smart_oral_health_monitor/Dental diseases/Mouth Ulcer",
+    "Gum Disease": "/Users/ssanjay/Documents/FYP/Smart_oral_health_monitor/Dental diseases/Gum Diseases DataSet",
 }
 
 # Label mapping

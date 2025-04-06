@@ -1,9 +1,8 @@
 import os
 import cv2
-import numpy as np
 from dental_disease_model import DentalDiseaseModel
 
-# Label mapping
+# ✅ Label Mapping
 labels_dict = {
     0: "Healthy Teeth",
     1: "Dental Cavities",
@@ -13,10 +12,8 @@ labels_dict = {
     5: "Gum Disease"
 }
 
-
 def detect_disease(img_path, processed_img_path, model):
-    """ Predicts dental disease and saves result with bounding box. """
-
+    """Predicts dental disease and saves processed image."""
     if not os.path.exists(img_path):
         print(f"❌ Error: Image not found - {img_path}")
         return None
@@ -26,10 +23,14 @@ def detect_disease(img_path, processed_img_path, model):
         print(f"❌ Error: Unable to load image {img_path}")
         return None
 
-    prediction = model.predict(img)
+    # ✅ Resize and process image
+    img_resized = cv2.resize(img, (128, 128))
+    img_gray = cv2.cvtColor(img_resized, cv2.COLOR_BGR2GRAY)  # Convert to grayscale
+
+    prediction = model.predict(img_gray)
     label = labels_dict.get(prediction, "Unknown")
 
-    # Draw bounding box & label on image
+    # ✅ Draw bounding box and label
     h, w, _ = img.shape
     start_point = (int(w * 0.25), int(h * 0.25))
     end_point = (int(w * 0.75), int(h * 0.75))
@@ -39,14 +40,12 @@ def detect_disease(img_path, processed_img_path, model):
     cv2.putText(img, label, (start_point[0], start_point[1] - 10),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
 
-    # Save processed image
+    # ✅ Save processed image
     cv2.imwrite(processed_img_path, img)
 
     print(f"✅ Predicted: {label}")
-    return label  # Return the predicted label
+    return label
 
-
-# Load model
-dataset_paths = ["D:/Dental diseases/Training dataset"]  # ✅ Update dataset path
-model = DentalDiseaseModel(dataset_paths)  # ✅ Pass dataset_paths to the model
+# ✅ Load model
+model = DentalDiseaseModel()
 model.load_model()

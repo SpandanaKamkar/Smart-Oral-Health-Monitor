@@ -12,8 +12,8 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PROCESSED_FOLDER, exist_ok=True)
 
 # ✅ Initialize the model
-dataset_paths = ["D:/Dental diseases/Training dataset"]  # ✅ Update dataset path
-model = DentalDiseaseModel(dataset_paths)  # ✅ Pass dataset_paths to the model
+# dataset_paths = ["D:/Dental diseases/Training dataset"]  # ✅ Update dataset path
+model = DentalDiseaseModel()  # ✅ Pass dataset_paths to the model
 model.load_model()  # ✅ Load the model
 
 @app.route('/processed/<filename>')
