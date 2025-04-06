@@ -94,7 +94,7 @@ class _ImageUploaderState extends State<ImageUploader> {
 
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('http://192.168.1.40:5000/detect'), // Ensure Flask is running
+      Uri.parse('http://192.168.0.7:5000/detect'), // Ensure Flask is running
     );
 
     request.files
